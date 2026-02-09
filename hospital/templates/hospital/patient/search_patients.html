@@ -1,0 +1,70 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Search Patients{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-search"></i> Search Patients</h4>
+            </div>
+            <div class="card-body">
+                <form method="get">
+                    <div class="input-group">
+                        {{ form.query }}
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+                    </div>
+                    <small class="form-text text-muted">Search by name, mobile number, email, or patient ID</small>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if patients %}
+<div class="card">
+    <div class="card-header">
+        <h5>Search Results ({{ patients.count }} found)</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>PID</th>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Doctor</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in patients %}
+                    <tr>
+                        <td>{{ patient.pid }}</td>
+                        <td>{{ patient.patient_name }}</td>
+                        <td>{{ patient.mobile_number }}</td>
+                        <td>{{ patient.consult_doctor.doctor_name }}</td>
+                        <td>
+                            {% if patient.is_admitted %}
+                            <span class="badge bg-info">Admitted</span>
+                            {% else %}
+                            <span class="badge bg-success">Discharged</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'patient_detail' patient.pid %}" class="btn btn-sm btn-primary">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% elif form.is_bound %}
+<div class="alert alert-info text-center">No patients found matching your search.</div>
+{% endif %}
+{% endblock %}

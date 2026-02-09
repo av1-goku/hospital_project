@@ -1,0 +1,90 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}{{ doctor.doctor_name }} - Doctor Details{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-user-md"></i> Doctor Information</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th width="200">Doctor ID:</th>
+                        <td>{{ doctor.did }}</td>
+                    </tr>
+                    <tr>
+                        <th>Name:</th>
+                        <td>{{ doctor.doctor_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Father's Name:</th>
+                        <td>{{ doctor.father_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Gender:</th>
+                        <td>{{ doctor.get_gender_display }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date of Birth:</th>
+                        <td>{{ doctor.dob }}</td>
+                    </tr>
+                    <tr>
+                        <th>Qualification:</th>
+                        <td>{{ doctor.qualification }}</td>
+                    </tr>
+                    <tr>
+                        <th>Experience:</th>
+                        <td>{{ doctor.experience }} years</td>
+                    </tr>
+                    <tr>
+                        <th>Last Worked Hospital:</th>
+                        <td>{{ doctor.last_worked_hospital }}</td>
+                    </tr>
+                    <tr>
+                        <th>Salary:</th>
+                        <td>₹{{ doctor.salary }}</td>
+                    </tr>
+                    <tr>
+                        <th>Address:</th>
+                        <td>{{ doctor.address }}</td>
+                    </tr>
+                </table>
+
+                <div class="mt-4">
+                    <a href="{% url 'doctor_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                    <a href="{% url 'edit_doctor' doctor.did %}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-users"></i> Recent Patients</h5>
+            </div>
+            <div class="card-body">
+                {% if patients %}
+                <ul class="list-group list-group-flush">
+                    {% for patient in patients %}
+                    <li class="list-group-item">
+                        <a href="{% url 'patient_detail' patient.pid %}">{{ patient.patient_name }}</a>
+                        <br><small class="text-muted">{{ patient.admission_date|date:"M d, Y" }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No patients yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'hospital/base.html' %}
+{% block title %}Attendance List{% endblock %}
+{% block content %}
+<h2>Attendance Records <a href="{% url 'mark_attendance' %}" class="btn btn-primary float-end">Mark Attendance</a></h2>
+<div class="card"><div class="card-body"><table class="table"><thead><tr><th>Staff</th><th>Date</th><th>In Time</th><th>Out Time</th><th>Status</th></tr></thead>
+<tbody>{% for att in attendances %}<tr><td>{{ att.staff.username }}</td><td>{{ att.date_of_attendance }}</td>
+<td>{{ att.incoming_time|default:"-" }}</td><td>{{ att.outgoing_time|default:"-" }}</td>
+<td><span class="badge bg-{{ att.status }}">{{ att.get_status_display }}</span></td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

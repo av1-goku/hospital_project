@@ -1,0 +1,10 @@
+{% extends 'hospital/base.html' %}
+{% block title %}Wards List{% endblock %}
+{% block content %}
+<h2>Wards List <a href="{% url 'add_ward' %}" class="btn btn-primary float-end">Add Ward</a></h2>
+<div class="card"><div class="card-body">
+<table class="table"><thead><tr><th>ID</th><th>Ward Name</th><th>Type</th><th>Beds</th><th>Cost</th><th>Actions</th></tr></thead>
+<tbody>{% for ward in wards %}<tr><td>{{ ward.wid }}</td><td>{{ ward.ward_name }}</td><td>{{ ward.ward_type }}</td>
+<td>{{ ward.total_beds }}</td><td>₹{{ ward.cost }}</td><td><a href="{% url 'ward_detail' ward.wid %}" class="btn btn-sm btn-info">View</a></td></tr>
+{% endfor %}</tbody></table></div></div>
+{% endblock %}

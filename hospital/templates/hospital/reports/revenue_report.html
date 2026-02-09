@@ -1,0 +1,21 @@
+{% extends 'hospital/base.html' %}
+{% block title %}Revenue Report{% endblock %}
+{% block content %}
+<h2>Revenue Report</h2>
+<div class="card mb-3"><div class="card-body"><form method="get" class="row g-3">
+<div class="col-md-5"><label>Start Date</label>{{ form.start_date }}</div>
+<div class="col-md-5"><label>End Date</label>{{ form.end_date }}</div>
+<div class="col-md-2"><label>&nbsp;</label><button type="submit" class="btn btn-primary w-100">Filter</button></div>
+</form></div></div>
+<div class="row mb-3">
+<div class="col-md-4"><div class="card text-center bg-success text-white"><div class="card-body"><h3>₹{{ stats.total_revenue|floatformat:2 }}</h3><p>Total Revenue</p></div></div></div>
+<div class="col-md-4"><div class="card text-center bg-info text-white"><div class="card-body"><h3>₹{{ stats.paid_amount|floatformat:2 }}</h3><p>Paid Amount</p></div></div></div>
+<div class="col-md-4"><div class="card text-center bg-warning"><div class="card-body"><h3>₹{{ stats.pending_amount|floatformat:2 }}</h3><p>Pending Amount</p></div></div></div>
+</div>
+<div class="card"><div class="card-header"><h5>Bills List</h5></div><div class="card-body">
+<table class="table"><thead><tr><th>Bill ID</th><th>Patient</th><th>Doctor</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+<tbody>{% for bill in bills %}<tr><td>#{{ bill.bid }}</td><td>{{ bill.patient.patient_name }}</td>
+<td>{{ bill.consult_doctor.doctor_name }}</td><td>₹{{ bill.total_amount|floatformat:2 }}</td>
+<td><span class="badge bg-{{ bill.payment_status }}">{{ bill.get_payment_status_display }}</span></td>
+<td>{{ bill.bill_date|date:"M d, Y" }}</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

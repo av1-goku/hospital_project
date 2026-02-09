@@ -1,0 +1,149 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Dashboard - Hospital Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+        <p class="text-muted">Welcome back, {{ user.get_full_name|default:user.username }}! ({{
+            user.userprofile.get_role_display }})</p>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card dashboard-card card-primary">
+            <div class="card-body">
+                <h5 class="card-title">{{ total_patients }}</h5>
+                <p class="card-text"><i class="fas fa-user-injured"></i> Total Patients</p>
+                <a href="{% url 'patient_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card dashboard-card card-success">
+            <div class="card-body">
+                <h5 class="card-title">{{ admitted_patients }}</h5>
+                <p class="card-text"><i class="fas fa-bed"></i> Currently Admitted</p>
+                <a href="{% url 'patient_list' %}" class="btn btn-sm btn-outline-success">View Details</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card dashboard-card card-info">
+            <div class="card-body">
+                <h5 class="card-title">{{ total_doctors }}</h5>
+                <p class="card-text"><i class="fas fa-user-md"></i> Total Doctors</p>
+                <a href="{% url 'doctor_list' %}" class="btn btn-sm btn-outline-info">View All</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card dashboard-card card-warning">
+            <div class="card-body">
+                <h5 class="card-title">₹{{ total_revenue|floatformat:2 }}</h5>
+                <p class="card-text"><i class="fas fa-rupee-sign"></i> Total Revenue</p>
+                <a href="{% url 'bill_list' %}" class="btn btn-sm btn-outline-warning">View Bills</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <a href="{% url 'add_patient' %}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-user-plus"></i><br>Admit New Patient
+                        </a>
+                    </div>
+                    {% if user.userprofile.role == 'admin' or user.userprofile.role == 'receptionist' %}
+                    <div class="col-md-3">
+                        <a href="{% url 'add_doctor' %}" class="btn btn-outline-success w-100">
+                            <i class="fas fa-user-md"></i><br>Add New Doctor
+                        </a>
+                    </div>
+                    {% endif %}
+                    <div class="col-md-3">
+                        <a href="{% url 'search_patients' %}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-search"></i><br>Search Patient
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'bill_list' %}" class="btn btn-outline-warning w-100">
+                            <i class="fas fa-file-invoice"></i><br>View Bills
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-user-injured"></i> Recent Patients</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_patients %}
+                <div class="list-group list-group-flush">
+                    {% for patient in recent_patients %}
+                    <a href="{% url 'patient_detail' patient.pid %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ patient.patient_name }}</h6>
+                            <small>{{ patient.admission_date|date:"M d, Y" }}</small>
+                        </div>
+                        <p class="mb-1 small">{{ patient.problem|truncatewords:10 }}</p>
+                        <small class="text-muted">Dr. {{ patient.consult_doctor.doctor_name }}</small>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No recent patients</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-file-invoice-dollar"></i> Recent Bills</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_bills %}
+                <div class="list-group list-group-flush">
+                    {% for bill in recent_bills %}
+                    <a href="{% url 'bill_detail' bill.bid %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Bill #{{ bill.bid }}</h6>
+                            <span class="badge bg-{{ bill.payment_status }}">{{ bill.get_payment_status_display
+                                }}</span>
+                        </div>
+                        <p class="mb-1">{{ bill.patient.patient_name }}</p>
+                        <small class="text-muted">₹{{ bill.total_amount|floatformat:2 }}</small>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No recent bills</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

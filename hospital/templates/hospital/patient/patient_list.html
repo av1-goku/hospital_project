@@ -1,0 +1,76 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Patients List - Hospital Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-md-6">
+        <h2><i class="fas fa-user-injured"></i> Patients List</h2>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{% url 'add_patient' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Admit New Patient
+        </a>
+        <a href="{% url 'search_patients' %}" class="btn btn-info">
+            <i class="fas fa-search"></i> Search
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>PID</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Doctor</th>
+                        <th>Problem</th>
+                        <th>Admission Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in patients %}
+                    <tr>
+                        <td>{{ patient.pid }}</td>
+                        <td>{{ patient.patient_name }}</td>
+                        <td>{{ patient.age }}</td>
+                        <td>{{ patient.consult_doctor.doctor_name }}</td>
+                        <td>{{ patient.problem|truncatewords:5 }}</td>
+                        <td>{{ patient.admission_date|date:"M d, Y" }}</td>
+                        <td>
+                            {% if patient.is_admitted %}
+                            <span class="badge bg-info">Admitted</span>
+                            {% else %}
+                            <span class="badge bg-success">Discharged</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'patient_detail' patient.pid %}" class="btn btn-sm btn-info">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% if patient.is_admitted %}
+                            <a href="{% url 'discharge_patient' patient.pid %}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </a>
+                            <a href="{% url 'generate_bill' patient.pid %}" class="btn btn-sm btn-success">
+                                <i class="fas fa-file-invoice"></i>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">No patients found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

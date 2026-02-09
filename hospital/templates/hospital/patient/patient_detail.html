@@ -1,0 +1,112 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}{{ patient.patient_name }} - Patient Details{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h4><i class="fas fa-user-injured"></i> Patient Information</h4>
+                {% if patient.is_admitted %}
+                <span class="badge bg-info">Currently Admitted</span>
+                {% else %}
+                <span class="badge bg-success">Discharged</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <th width="200">Patient ID:</th>
+                        <td>{{ patient.pid }}</td>
+                    </tr>
+                    <tr>
+                        <th>Name:</th>
+                        <td>{{ patient.patient_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Age:</th>
+                        <td>{{ patient.age }} years</td>
+                    </tr>
+                    <tr>
+                        <th>Gender:</th>
+                        <td>{{ patient.get_gender_display }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mobile:</th>
+                        <td>{{ patient.mobile_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td>{{ patient.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Address:</th>
+                        <td>{{ patient.address }}</td>
+                    </tr>
+                    <tr>
+                        <th>Consulting Doctor:</th>
+                        <td>{{ patient.consult_doctor.doctor_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Problem:</th>
+                        <td>{{ patient.problem }}</td>
+                    </tr>
+                    <tr>
+                        <th>Diagnosis:</th>
+                        <td>{{ patient.diagnosis }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fee:</th>
+                        <td>₹{{ patient.fee }}</td>
+                    </tr>
+                    <tr>
+                        <th>Admission Date:</th>
+                        <td>{{ patient.admission_date|date:"F d, Y H:i" }}</td>
+                    </tr>
+                    {% if not patient.is_admitted %}
+                    <tr>
+                        <th>Discharge Date:</th>
+                        <td>{{ patient.discharge_date|date:"F d, Y H:i" }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+
+                <div class="mt-4">
+                    <a href="{% url 'patient_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i>
+                        Back</a>
+                    {% if patient.is_admitted %}
+                    <a href="{% url 'discharge_patient' patient.pid %}" class="btn btn-warning"><i
+                            class="fas fa-sign-out-alt"></i> Discharge</a>
+                    <a href="{% url 'generate_bill' patient.pid %}" class="btn btn-success"><i
+                            class="fas fa-file-invoice"></i> Generate Bill</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-file-invoice-dollar"></i> Bills</h5>
+            </div>
+            <div class="card-body">
+                {% if bills %}
+                <ul class="list-group list-group-flush">
+                    {% for bill in bills %}
+                    <li class="list-group-item">
+                        <a href="{% url 'bill_detail' bill.bid %}">Bill #{{ bill.bid }}</a>
+                        <br><small>₹{{ bill.total_amount }} - <span class="badge bg-{{ bill.payment_status }}">{{
+                                bill.get_payment_status_display }}</span></small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No bills generated</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

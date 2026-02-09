@@ -1,0 +1,21 @@
+{% extends 'hospital/base.html' %}
+{% block title %}Admission Report{% endblock %}
+{% block content %}
+<h2>Admission/Discharge Report</h2>
+<div class="card mb-3"><div class="card-body"><form method="get" class="row g-3">
+<div class="col-md-5"><label>Start Date</label>{{ form.start_date }}</div>
+<div class="col-md-5"><label>End Date</label>{{ form.end_date }}</div>
+<div class="col-md-2"><label>&nbsp;</label><button type="submit" class="btn btn-primary w-100">Filter</button></div>
+</form></div></div>
+<div class="row mb-3">
+<div class="col-md-4"><div class="card text-center"><div class="card-body"><h3>{{ stats.total_admissions }}</h3><p>Total Admissions</p></div></div></div>
+<div class="col-md-4"><div class="card text-center"><div class="card-body"><h3>{{ stats.currently_admitted }}</h3><p>Currently Admitted</p></div></div></div>
+<div class="col-md-4"><div class="card text-center"><div class="card-body"><h3>{{ stats.discharged }}</h3><p>Discharged</p></div></div></div>
+</div>
+<div class="card"><div class="card-header"><h5>Admissions List</h5></div><div class="card-body">
+<table class="table"><thead><tr><th>PID</th><th>Patient</th><th>Doctor</th><th>Admission Date</th><th>Status</th></tr></thead>
+<tbody>{% for patient in admissions %}<tr><td>{{ patient.pid }}</td><td>{{ patient.patient_name }}</td>
+<td>{{ patient.consult_doctor.doctor_name }}</td><td>{{ patient.admission_date|date:"M d, Y" }}</td>
+<td>{% if patient.is_admitted %}<span class="badge bg-info">Admitted</span>{% else %}<span class="badge bg-success">Discharged</span>{% endif %}</td></tr>
+{% endfor %}</tbody></table></div></div>
+{% endblock %}

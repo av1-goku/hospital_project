@@ -1,0 +1,21 @@
+{% extends 'hospital/base.html' %}
+{% block title %}Attendance Report{% endblock %}
+{% block content %}
+<h2>Attendance Report</h2>
+<div class="card mb-3"><div class="card-body"><form method="get" class="row g-3">
+<div class="col-md-5"><label>Start Date</label>{{ form.start_date }}</div>
+<div class="col-md-5"><label>End Date</label>{{ form.end_date }}</div>
+<div class="col-md-2"><label>&nbsp;</label><button type="submit" class="btn btn-primary w-100">Filter</button></div>
+</form></div></div>
+<div class="row mb-3">
+<div class="col-md-3"><div class="card text-center"><div class="card-body"><h3>{{ stats.present_count }}</h3><p>Present</p></div></div></div>
+<div class="col-md-3"><div class="card text-center"><div class="card-body"><h3>{{ stats.absent_count }}</h3><p>Absent</p></div></div></div>
+<div class="col-md-3"><div class="card text-center"><div class="card-body"><h3>{{ stats.leave_count }}</h3><p>On Leave</p></div></div></div>
+<div class="col-md-3"><div class="card text-center"><div class="card-body"><h3>{{ stats.total_records }}</h3><p>Total Records</p></div></div></div>
+</div>
+<div class="card"><div class="card-header"><h5>Attendance Records</h5></div><div class="card-body">
+<table class="table"><thead><tr><th>Staff</th><th>Date</th><th>In Time</th><th>Out Time</th><th>Status</th></tr></thead>
+<tbody>{% for att in attendances %}<tr><td>{{ att.staff.username }}</td><td>{{ att.date_of_attendance }}</td>
+<td>{{ att.incoming_time|default:"-" }}</td><td>{{ att.outgoing_time|default:"-" }}</td>
+<td><span class="badge bg-{{ att.status }}">{{ att.get_status_display }}</span></td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}
